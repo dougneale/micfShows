@@ -1,0 +1,271 @@
+{{! page that displays list of shows, allows a user to add a show using a form }}
+{{! reference endpoints in copilot-node/micfShows/index.js }}
+{{! reference schema and models in copilot-node/micfShows/models/show.js }}
+{{! add endpoint is POST /shows, delete endpoint is DELETE /shows }}
+{{! include modal to edit details of each show }}
+{{! use forms not links }}
+<html>
+  <head>
+    <title>MicfShows</title>
+    <!-- link jquery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function() {
+        $('#editModal').on('show.bs.modal',
+      function(event) { 
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var name = button.data('name'); 
+        var artist = button.data('artist');
+        var venue = button.data('venue');
+        var modal = $(this);
+        console.log(name)
+        console.log( modal.find('.modal-body#name'))
+        modal.find('.modal-body #id').val(id);
+        modal.find('.modal-body #name').val(name);
+        modal.find('.modal-body #artist').val(artist);
+        modal.find('.modal-body #venue').val(venue);
+        // set type in select
+        modal.find('.modal-body #type').val(type)
+
+      }); 
+      });
+    </script>
+  </head>
+  <body>
+        <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">MicfShows</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/profile">Profile</a></li>
+          {{!-- users --}}
+          <li><a href="/users">Users</a></li>
+          {{!-- shows --}}
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <h1>You're logged in as {{user.name}}</h1>
+      <!-- go to profile page -->
+      <a href="/profile">Profile</a>
+
+      <h3>You have watched {{user.shows.length}} shows</h3>
+    </div>
+    <div class="container">
+      <h1>MicfShows</h1>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Shows</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Artist</th>
+                    <th>Venue</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each shows}}
+                    <tr>
+                      <td>{{name}}</td>
+                      <td>{{artist}}</td>
+                      <td>{{venue}}</td>
+                      <td>{{type}}</td>
+                      <td>
+                        <!-- buttons are in a row -->
+                        <style>
+                          .actions form {
+                            display: inline;
+                          }
+                        </style>
+                        <div class="actions" role="group">
+                          
+                          <!-- delete button form for show -->
+                          <form action="/shows/{{_id}}/delete" method="POST">
+                            <button type="submit" class="btn btn-danger">
+                              <!-- delete icon -->
+                              <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                          </form>
+                          <!-- edit button form for show that opens modal -->
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-toggle="modal"
+                            data-target="#editModal"
+                            data-id="{{_id}}"
+                            data-name="{{name}}"
+                            data-artist="{{artist}}"
+                            data-venue="{{venue}}"
+                          >
+                            <span class="glyphicon glyphicon-edit"></span>
+                          </button>
+                          <!-- "I saw this" button that adds show to user's list of shows -->
+                          <!-- disable if seen -->
+                          <form action="/shows/{{_id}}/saw" method="POST">
+                            <button
+                              type="submit"
+                              class="btn btn-success"
+                              {{#if seen}} disabled {{/if}}
+                            >
+                              <span class="glyphicon glyphicon-eye-open"></span>
+                            </button>
+
+                        </div>
+                      </td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Add Show</h3>
+            </div>
+            <div class="panel-body">
+              <form action="/shows" method="POST">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    placeholder="Name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="artist">Artist</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="artist"
+                    name="artist"
+                    placeholder="artist"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="venue">Venue</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="venue"
+                    name="venue"
+                    placeholder="venue"
+                  />
+                </div>
+                <!-- select type of show use types -->
+                <div class="form-group">
+                  <label for="type">Type</label>
+                  <select class="form-control form-select" id="type" name="type">
+                    <!-- list types with handlebars -->
+                    {{#each types}}
+                      <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Add Show
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- edit modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit Show</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/shows/update" method="POST">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input
+                  type="hidden"
+                  class="form-control"
+                  id="id"
+                  name="id"
+                  />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="artist">Artist</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="artist"
+                  name="artist"
+                  placeholder="artist"
+                />
+              </div>
+              <div class="form-group">
+                <label for="venue">Venue</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="venue"
+                  name="venue"
+                  placeholder="venue"
+                />
+              </div>
+              <!-- select type of show use types -->
+              <div class="form-group">
+                <label for="type">Type</label>
+                <select class="form-control form-select" id="type" name="type">
+                  <!-- list types with handlebars -->
+                  {{#each types}}
+                    <option value="{{this}}">{{this}}</option>
+                  {{/each}}
+                </select>
+              <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+  </body>
+
+</html>

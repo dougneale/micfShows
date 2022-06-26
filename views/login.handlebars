@@ -1,0 +1,74 @@
+{{!-- simple login page with email and password and validation --}}
+
+<html>
+  <head>
+    <title>MicfShows</title>
+    <!-- link jquery -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Micf Shows</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      {{! navbar including back to homepage link }}
+      <div class="row">
+        <div class="col-md-12">
+          <!-- panel listing user name and email -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Profile</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <!-- simple login page with email and password and validation -->
+                    <form action="/login" method="POST">
+                      <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                      </div>
+                      <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+                      </div>
+                      {{!-- button group --}}
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                      {{!-- register button --}}
+                      <a href="/register" class="btn btn-default">Register</a>
+                    </form>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+</html>
